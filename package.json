@@ -1,9 +1,15 @@
 {
-  "name": "@gabriel-tecnologia/pabip-sdk",
+  "name": "@protocolo-aberto-brasileiro-integracao/pabip-sdk",
   "version": "0.1.0",
   "description": "TypeScript protocol layer for PABIP: envelope DTOs, typed HTTP clients for the sensor-nodes/video/analytics axes, and output-sink driver contract types.",
   "license": "Apache-2.0",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/protocolo-aberto-brasileiro-integracao/lib-pabip-sdk.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "engines": {
     "node": ">=20.0.0"
   },
