@@ -2,7 +2,7 @@
   "name": "@gabriel-tecnologia/pabip-sdk",
   "version": "0.1.0",
   "description": "TypeScript protocol layer for PABIP: envelope DTOs, typed HTTP clients for the sensor-nodes/video/analytics axes, and output-sink driver contract types.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": true,
   "engines": {
     "node": ">=20.0.0"
