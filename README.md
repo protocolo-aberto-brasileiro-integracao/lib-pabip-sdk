@@ -6,20 +6,13 @@ Não inclui autenticação, rate limiting, circuit breaker ou qualquer estado op
 
 ## Instalação
 
-Este pacote é publicado no GitHub Packages, não no registro público do npm. O registro do GitHub exige autenticação mesmo para pacotes de repositórios públicos — quem for instalar precisa de um [personal access token](https://github.com/settings/tokens) do GitHub com escopo `read:packages`.
-
-Adicione ao `.npmrc` do seu projeto (não do pacote):
-
-```
-@protocolo-aberto-brasileiro-integracao:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-E então instale normalmente:
-
 ```
 npm install @protocolo-aberto-brasileiro-integracao/pabip-sdk
 ```
+
+Publicado no [registro público do npm](https://www.npmjs.com/package/@protocolo-aberto-brasileiro-integracao/pabip-sdk) — sem autenticação necessária para instalar.
+
+O pacote também é publicado no GitHub Packages (mesmo scope, mesma versão), mas esse registro exige um [personal access token](https://github.com/settings/tokens) do GitHub com escopo `read:packages` mesmo para repositórios públicos. Use o npm público a menos que tenha um motivo específico para preferir o GitHub Packages.
 
 ## Uso
 
