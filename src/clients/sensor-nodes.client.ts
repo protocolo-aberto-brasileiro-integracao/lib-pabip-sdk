@@ -1,6 +1,10 @@
 import axios, { AxiosInstance } from "axios";
-import { DEFAULT_CLIENT_TIMEOUT_MS } from "./constants";
-import type { PabipPeerConnection, SensorNodeListing } from "./types";
+import { buildClientHeaders, DEFAULT_CLIENT_TIMEOUT_MS } from "./constants";
+import type {
+  PabipPeerConnection,
+  SensorNodeListing,
+  TraceabilityOptions,
+} from "./types";
 
 /** `GET /sensor-nodes` / `GET /sensor-nodes/{nodeId}` against a peer's own PABIP surface. */
 export class SensorNodesClient {
@@ -10,11 +14,12 @@ export class SensorNodesClient {
     peer: PabipPeerConnection,
     page: number,
     pageSize: number,
+    trace?: TraceabilityOptions,
   ): Promise<SensorNodeListing> {
     const response = await this.http.get<SensorNodeListing>(
       `${trimBaseUrl(peer.baseUrl)}/sensor-nodes`,
       {
-        headers: { "X-API-Key": peer.apiKey },
+        headers: buildClientHeaders(peer.apiKey, trace),
         params: { page, pageSize },
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,
       },
@@ -25,11 +30,12 @@ export class SensorNodesClient {
   async getSensorNode(
     peer: PabipPeerConnection,
     nodeId: string,
+    trace?: TraceabilityOptions,
   ): Promise<unknown> {
     const response = await this.http.get(
       `${trimBaseUrl(peer.baseUrl)}/sensor-nodes/${nodeId}`,
       {
-        headers: { "X-API-Key": peer.apiKey },
+        headers: buildClientHeaders(peer.apiKey, trace),
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,
       },
     );
