@@ -8,7 +8,7 @@ export class ImageAnalyticsClient {
 
   async getEvent(peer: PabipPeerConnection, eventId: string): Promise<unknown> {
     const response = await this.http.get(
-      `${trimBaseUrl(peer.baseUrl)}/image-analytics/${eventId}`,
+      `${trimBaseUrl(peer.baseUrl)}/image-analytics/${encodeURIComponent(eventId)}`,
       {
         headers: { "X-API-Key": peer.apiKey },
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,

@@ -27,7 +27,7 @@ export class SensorNodesClient {
     nodeId: string,
   ): Promise<unknown> {
     const response = await this.http.get(
-      `${trimBaseUrl(peer.baseUrl)}/sensor-nodes/${nodeId}`,
+      `${trimBaseUrl(peer.baseUrl)}/sensor-nodes/${encodeURIComponent(nodeId)}`,
       {
         headers: { "X-API-Key": peer.apiKey },
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,

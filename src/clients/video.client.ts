@@ -17,7 +17,7 @@ export class VideoClient {
     body: VideoSessionRequest,
   ): Promise<VideoSession> {
     const response = await this.http.post<VideoSession>(
-      `${trimBaseUrl(peer.baseUrl)}/video/playback/${nodeId}/session`,
+      `${trimBaseUrl(peer.baseUrl)}/video/playback/${encodeURIComponent(nodeId)}/session`,
       body,
       {
         headers: { "X-API-Key": peer.apiKey },
@@ -32,7 +32,7 @@ export class VideoClient {
     nodeId: string,
   ): Promise<RecordingsCatalog> {
     const response = await this.http.get<RecordingsCatalog>(
-      `${trimBaseUrl(peer.baseUrl)}/video/playback/${nodeId}/recordings`,
+      `${trimBaseUrl(peer.baseUrl)}/video/playback/${encodeURIComponent(nodeId)}/recordings`,
       {
         headers: { "X-API-Key": peer.apiKey },
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,
