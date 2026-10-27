@@ -19,7 +19,7 @@ export class VideoClient {
     trace?: TraceabilityOptions,
   ): Promise<VideoSession> {
     const response = await this.http.post<VideoSession>(
-      `${trimBaseUrl(peer.baseUrl)}/video/playback/${nodeId}/session`,
+      `${trimBaseUrl(peer.baseUrl)}/video/playback/${encodeURIComponent(nodeId)}/session`,
       body,
       {
         headers: buildClientHeaders(peer.apiKey, trace),
@@ -35,7 +35,7 @@ export class VideoClient {
     trace?: TraceabilityOptions,
   ): Promise<RecordingsCatalog> {
     const response = await this.http.get<RecordingsCatalog>(
-      `${trimBaseUrl(peer.baseUrl)}/video/playback/${nodeId}/recordings`,
+      `${trimBaseUrl(peer.baseUrl)}/video/playback/${encodeURIComponent(nodeId)}/recordings`,
       {
         headers: buildClientHeaders(peer.apiKey, trace),
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,

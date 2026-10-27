@@ -33,7 +33,7 @@ export class SensorNodesClient {
     trace?: TraceabilityOptions,
   ): Promise<unknown> {
     const response = await this.http.get(
-      `${trimBaseUrl(peer.baseUrl)}/sensor-nodes/${nodeId}`,
+      `${trimBaseUrl(peer.baseUrl)}/sensor-nodes/${encodeURIComponent(nodeId)}`,
       {
         headers: buildClientHeaders(peer.apiKey, trace),
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,
