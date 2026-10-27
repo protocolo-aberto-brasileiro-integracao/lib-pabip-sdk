@@ -19,6 +19,7 @@ describe("VideoClient", () => {
       })
       .matchHeader("X-API-Key", "their-secret-key")
       .reply(200, {
+        sessionId: "018f9b7c-0000-7000-8000-000000000001",
         streamUrl: "https://cdn.example.test/stream/1",
         expiresIn: 60,
       });
@@ -29,9 +30,34 @@ describe("VideoClient", () => {
     });
 
     expect(result).toEqual({
+      sessionId: "018f9b7c-0000-7000-8000-000000000001",
       streamUrl: "https://cdn.example.test/stream/1",
       expiresIn: 60,
     });
+    expect(scope.isDone()).toBe(true);
+  });
+
+  it("forwards traceability headers when provided on session creation", async () => {
+    const scope = nock("https://acme.example.test")
+      .post("/video/playback/node-1/session")
+      .matchHeader("X-API-Key", "their-secret-key")
+      .matchHeader("X-Request-Id", "req-123")
+      .matchHeader("X-Actor-Id", "actor-9")
+      .matchHeader("X-Case-Ref", "case-abc")
+      .reply(200, {
+        sessionId: "018f9b7c-0000-7000-8000-000000000002",
+        streamUrl: "https://cdn.example.test/stream/2",
+        expiresIn: 60,
+      });
+
+    const client = new VideoClient();
+    await client.createSession(
+      peer,
+      "node-1",
+      {},
+      { requestId: "req-123", actorId: "actor-9", caseRef: "case-abc" },
+    );
+
     expect(scope.isDone()).toBe(true);
   });
 
@@ -66,6 +92,49 @@ describe("VideoClient", () => {
       client.createSession(peer, "node-1", {}),
     ).rejects.toMatchObject({
       response: { status: 422 },
+    });
+  });
+
+  it("deletes a playback session", async () => {
+    const scope = nock("https://acme.example.test")
+      .delete("/video/playback/session/session-1")
+      .matchHeader("X-API-Key", "their-secret-key")
+      .reply(204);
+
+    const client = new VideoClient();
+    await client.deleteSession(peer, "session-1");
+
+    expect(scope.isDone()).toBe(true);
+  });
+
+  it("forwards traceability headers when deleting a session", async () => {
+    const scope = nock("https://acme.example.test")
+      .delete("/video/playback/session/session-1")
+      .matchHeader("X-API-Key", "their-secret-key")
+      .matchHeader("X-Request-Id", "req-456")
+      .matchHeader("X-Actor-Id", "actor-7")
+      .matchHeader("X-Case-Ref", "case-xyz")
+      .reply(204);
+
+    const client = new VideoClient();
+    await client.deleteSession(peer, "session-1", {
+      requestId: "req-456",
+      actorId: "actor-7",
+      caseRef: "case-xyz",
+    });
+
+    expect(scope.isDone()).toBe(true);
+  });
+
+  it("rejects when the session is unknown to the peer", async () => {
+    nock("https://acme.example.test")
+      .delete("/video/playback/session/missing")
+      .reply(404, { type: "session-not-found", status: 404 });
+
+    const client = new VideoClient();
+
+    await expect(client.deleteSession(peer, "missing")).rejects.toMatchObject({
+      response: { status: 404 },
     });
   });
 });

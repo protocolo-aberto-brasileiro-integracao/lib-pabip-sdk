@@ -14,8 +14,16 @@ export interface SensorNodeListing {
 
 /** Mirrors the PABIP spec's `POST /video/playback/{id}/session` response 1:1. */
 export interface VideoSession {
+  sessionId: string;
   streamUrl: string;
   expiresIn: number;
+}
+
+/** Optional per-call traceability headers carried on exposed GET/POST/DELETE endpoints. */
+export interface TraceabilityOptions {
+  requestId?: string;
+  actorId?: string;
+  caseRef?: string;
 }
 
 /** Mirrors the PABIP spec's `POST /video/playback/{id}/session` request body 1:1. */
