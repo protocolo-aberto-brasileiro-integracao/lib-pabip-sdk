@@ -1,11 +1,17 @@
-import axios, { AxiosInstance } from "axios";
-import { buildClientHeaders, DEFAULT_CLIENT_TIMEOUT_MS } from "./constants";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import {
+  buildClientHeaders,
+  DEFAULT_CLIENT_TIMEOUT_MS,
+  generateRequestId,
+  HEADER_REQUEST_ID,
+} from "./constants";
 import type {
   PabipPeerConnection,
   RecordingsCatalog,
   TraceabilityOptions,
   VideoSession,
   VideoSessionRequest,
+  VideoSessionResult,
 } from "./types";
 
 /** `POST /video/playback/{nodeId}/session`, `GET /video/playback/{nodeId}/recordings` and `DELETE /video/playback/session/{sessionId}` against a peer's own PABIP surface. */
@@ -17,16 +23,20 @@ export class VideoClient {
     nodeId: string,
     body: VideoSessionRequest,
     trace?: TraceabilityOptions,
-  ): Promise<VideoSession> {
+  ): Promise<VideoSessionResult> {
+    const requestId = trace?.requestId ?? generateRequestId();
     const response = await this.http.post<VideoSession>(
       `${trimBaseUrl(peer.baseUrl)}/video/playback/${encodeURIComponent(nodeId)}/session`,
       body,
       {
-        headers: buildClientHeaders(peer.apiKey, trace),
+        headers: buildClientHeaders(peer.apiKey, { ...trace, requestId }),
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,
       },
     );
-    return response.data;
+    return {
+      ...response.data,
+      requestId: readResponseRequestId(response) ?? requestId,
+    };
   }
 
   async getRecordings(
@@ -61,4 +71,15 @@ export class VideoClient {
 
 function trimBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, "");
+}
+
+function readResponseRequestId(
+  response: AxiosResponse<VideoSession & { requestId?: string }>,
+): string | undefined {
+  const fromHeader: unknown =
+    response.headers?.[HEADER_REQUEST_ID.toLowerCase()];
+  if (typeof fromHeader === "string" && fromHeader) return fromHeader;
+  const fromBody = response.data?.requestId;
+  if (typeof fromBody === "string" && fromBody) return fromBody;
+  return undefined;
 }

@@ -19,6 +19,11 @@ export interface VideoSession {
   expiresIn: number;
 }
 
+/** `VideoSession` plus the correlation id resolved from the response (header/body) or the one sent. */
+export interface VideoSessionResult extends VideoSession {
+  requestId: string;
+}
+
 /** Optional per-call traceability headers carried on exposed GET/POST/DELETE endpoints. */
 export interface TraceabilityOptions {
   requestId?: string;
@@ -30,6 +35,7 @@ export interface TraceabilityOptions {
 export interface VideoSessionRequest {
   startDate?: string;
   endDate?: string;
+  allowlist?: string[];
 }
 
 /** Mirrors the PABIP spec's `GET /video/playback/{id}/recordings` response 1:1. */
