@@ -60,7 +60,7 @@ export class VideoClient {
     trace?: TraceabilityOptions,
   ): Promise<void> {
     await this.http.delete(
-      `${trimBaseUrl(peer.baseUrl)}/video/playback/session/${sessionId}`,
+      `${trimBaseUrl(peer.baseUrl)}/video/playback/session/${encodeURIComponent(sessionId)}`,
       {
         headers: buildClientHeaders(peer.apiKey, trace),
         timeout: DEFAULT_CLIENT_TIMEOUT_MS,

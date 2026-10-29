@@ -223,6 +223,18 @@ describe("VideoClient", () => {
     expect(scope.isDone()).toBe(true);
   });
 
+  it("encodes the session id in the delete path", async () => {
+    const scope = nock("https://acme.example.test")
+      .delete("/video/playback/session/..%2Fnode-1%2Frecordings")
+      .matchHeader("X-API-Key", "their-secret-key")
+      .reply(204);
+
+    const client = new VideoClient();
+    await client.deleteSession(peer, "../node-1/recordings");
+
+    expect(scope.isDone()).toBe(true);
+  });
+
   it("rejects when the session is unknown to the peer", async () => {
     nock("https://acme.example.test")
       .delete("/video/playback/session/missing")
